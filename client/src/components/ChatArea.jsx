@@ -93,62 +93,45 @@ export default function ChatArea({
   });
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden', position: 'relative' }}>
+    <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative w-full bg-wa-dark">
       {/* 1. Chat Header */}
-      <div style={{
-        height: '60px',
-        backgroundColor: '#202c33',
-        padding: '10px 16px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottom: '1px solid #222d34',
-        zIndex: 10
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div className="h-[60px] bg-wa-panel-header px-2 sm:px-4 py-2 flex items-center justify-between border-b border-wa-border z-10 flex-shrink-0 w-full">
+        {/* Left Side: Back button + Avatar + User Info */}
+        <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1 mr-1 sm:mr-3 overflow-hidden">
           {/* Mobile Back to Chats Button */}
           {onBack && (
             <button
               onClick={onBack}
-              className="md:hidden flex items-center justify-center w-8 h-8 rounded-full text-wa-text-secondary hover:text-wa-text-primary hover:bg-white/10 active:scale-95 transition-all mr-1 -ml-1"
+              className="md:hidden flex items-center justify-center w-8 h-8 rounded-full text-wa-text-secondary hover:text-wa-text-primary hover:bg-white/10 active:scale-95 transition-all flex-shrink-0 -ml-1"
               title="Back to chats"
             >
               <ArrowLeft size={20} />
             </button>
           )}
 
-          <div style={{ position: 'relative' }}>
+          <div className="relative flex-shrink-0">
             <img
               src={activeUser.avatar}
               alt={activeUser.display_name}
-              style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover"
             />
             {activeUser.online ? (
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                width: '10px',
-                height: '10px',
-                backgroundColor: '#00a884',
-                borderRadius: '50%',
-                border: '2px solid #202c33'
-              }} />
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-wa-green rounded-full border-2 border-[#202c33]" />
             ) : null}
           </div>
 
-          <div>
-            <div style={{ fontSize: '15px', fontWeight: '600', color: '#e9edef' }}>
+          <div className="min-w-0 flex-1 overflow-hidden">
+            <div className="text-[14px] sm:text-[15px] font-semibold text-wa-text-primary truncate leading-tight">
               {activeUser.display_name}
             </div>
-            <div style={{ fontSize: '12px', color: isTyping ? '#00a884' : '#8696a0', fontWeight: isTyping ? '600' : 'normal' }}>
+            <div className="text-[11px] sm:text-xs text-wa-text-secondary truncate leading-tight mt-0.5">
               {isTyping ? (
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span className="text-wa-green font-semibold flex items-center gap-1">
                   <span className="typing-dots"><span /><span /><span /></span>
                   typing...
                 </span>
               ) : activeUser.online ? (
-                'Online'
+                <span className="text-wa-green font-medium">Online</span>
               ) : (
                 `Last seen ${activeUser.last_seen ? formatMessageTime(activeUser.last_seen) : 'recently'}`
               )}
@@ -156,28 +139,26 @@ export default function ChatArea({
           </div>
         </div>
 
-        {/* Header Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        {/* Right Side: Header Actions (Search, Video Call, Voice Call) */}
+        <div className="flex items-center gap-0.5 sm:gap-1.5 flex-shrink-0">
           <button
             onClick={() => setShowSearch(!showSearch)}
-            className="icon-btn"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-wa-text-secondary hover:text-wa-text-primary hover:bg-white/10 active:scale-95 transition-all flex-shrink-0"
             title="Search in chat"
           >
-            <Search size={18} color={showSearch ? '#00a884' : '#8696a0'} />
+            <Search size={18} className={showSearch ? 'text-wa-green' : 'text-wa-text-secondary'} />
           </button>
           <button 
-            className="icon-btn" 
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-wa-green hover:bg-white/10 active:scale-95 transition-all flex-shrink-0" 
             title="Start Video Call"
             onClick={() => onStartCall && onStartCall('video')}
-            style={{ color: '#00a884' }}
           >
             <Video size={19} />
           </button>
           <button 
-            className="icon-btn" 
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-wa-green hover:bg-white/10 active:scale-95 transition-all flex-shrink-0" 
             title="Start Voice Call"
             onClick={() => onStartCall && onStartCall('audio')}
-            style={{ color: '#00a884' }}
           >
             <Phone size={18} />
           </button>
