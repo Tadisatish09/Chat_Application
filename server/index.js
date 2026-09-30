@@ -64,6 +64,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Serve frontend static files in production
+const clientDistPath = path.join(__dirname, '../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  console.log('[Server] 📦 Serving React production build from:', clientDistPath);
+  app.use(express.static(clientDistPath));
+
+  // Express 5 compatible fallback for all non-API frontend routes
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads') || req.path.startsWith('/socket.io')) {
+      return res.status(404).json({ error: 'Endpoint not found' });
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+} else {
+  console.log('[Server] ⚠️ client/dist not found. Run "npm run build" to build frontend.');
+  app.get('/', (req, res) => {
+    res.send('Chat Application Backend API is running! Run "npm run build" to generate the frontend UI.');
+  });
+}
+
 // Initialize Socket.IO handlers
 initSocketIO(io);
 
