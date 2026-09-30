@@ -799,22 +799,24 @@ export default function App() {
   }
 
   return (
-    <div className="app-container">
-      {/* 1. Sidebar */}
-      <Sidebar
-        currentUser={currentUser}
-        users={users}
-        activeUserId={activeUserId}
-        onSelectUser={handleSelectUser}
-        onOpenProfile={() => setIsProfileOpen(true)}
-        onLogout={handleLogout}
-        onSwitchAccount={handleSwitchAccount}
-        typingUsersMap={typingUsersMap}
-      />
+    <div className="flex h-screen w-screen bg-wa-dark overflow-hidden relative select-none">
+      {/* 1. Sidebar: visible on desktop, or on mobile when no active chat is selected */}
+      <div className={`h-full ${activeUser ? 'hidden md:flex' : 'flex w-full'} md:w-[380px] lg:w-[420px] md:min-w-[320px] md:max-w-[450px] md:border-r md:border-wa-border flex-shrink-0`}>
+        <Sidebar
+          currentUser={currentUser}
+          users={users}
+          activeUserId={activeUserId}
+          onSelectUser={handleSelectUser}
+          onOpenProfile={() => setIsProfileOpen(true)}
+          onLogout={handleLogout}
+          onSwitchAccount={handleSwitchAccount}
+          typingUsersMap={typingUsersMap}
+        />
+      </div>
 
-      {/* 2. Main Chat Area */}
+      {/* 2. Main Chat Area: visible on desktop, or on mobile when active chat is selected */}
       {activeUser ? (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden', backgroundColor: '#0b141a' }}>
+        <div className={`flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-wa-dark ${!activeUser ? 'hidden md:flex' : 'flex w-full'}`}>
           <ChatArea
             activeUser={activeUser}
             currentUser={currentUser}
@@ -833,6 +835,7 @@ export default function App() {
             onDeleteMessage={handleDeleteMessage}
             onMediaClick={(url) => setActiveMediaUrl(url)}
             onStartCall={handleStartCall}
+            onBack={() => setActiveUserId(null)}
           />
 
           <ChatInput
@@ -844,60 +847,29 @@ export default function App() {
           />
         </div>
       ) : (
-        <div style={{
-          flex: 1,
-          backgroundColor: '#222e35',
-          borderBottom: '6px solid #00a884',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '40px',
-          textAlign: 'center'
-        }}>
-          <div style={{
-            width: '120px',
-            height: '120px',
-            borderRadius: '50%',
-            backgroundColor: '#111b21',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '28px',
-            boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-            border: '2px solid rgba(0, 168, 132, 0.2)'
-          }}>
-            <Laptop size={56} color="#00a884" />
+        <div className="hidden md:flex flex-1 bg-[#222e35] border-b-[6px] border-wa-green flex-col items-center justify-center p-10 text-center">
+          <div className="w-[120px] h-[120px] rounded-full bg-wa-panel flex items-center justify-center mb-7 shadow-2xl border-2 border-wa-green/20">
+            <Laptop size={56} className="text-wa-green" />
           </div>
 
-          <h1 style={{ fontSize: '28px', fontWeight: '400', color: '#e9edef', marginBottom: '12px' }}>
+          <h1 className="text-2xl font-normal text-wa-text-primary mb-3">
             WhatsApp Web
           </h1>
 
-          <p style={{ fontSize: '14px', color: '#8696a0', maxWidth: '460px', lineHeight: 1.6, marginBottom: '24px' }}>
+          <p className="text-sm text-wa-text-secondary max-w-[460px] leading-relaxed mb-6">
             Send and receive instant messages, media attachments, and make real-time audio and video calls directly from your browser.
           </p>
 
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            color: '#8696a0',
-            fontSize: '12px',
-            backgroundColor: '#111b21',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: '1px solid rgba(255, 255, 255, 0.05)'
-          }}>
+          <div className="inline-flex items-center gap-2 text-wa-text-secondary text-xs bg-wa-panel px-4 py-2 rounded-full border border-white/5">
             {isConnected ? (
               <>
-                <Wifi size={14} color="#00a884" />
+                <Wifi size={14} className="text-wa-green" />
                 <span>Socket Connected • Real-time Active</span>
               </>
             ) : (
               <>
-                <WifiOff size={14} color="#ef4444" />
-                <span style={{ color: '#ef4444' }}>Socket Reconnecting...</span>
+                <WifiOff size={14} className="text-red-500" />
+                <span className="text-red-500">Socket Reconnecting...</span>
               </>
             )}
           </div>

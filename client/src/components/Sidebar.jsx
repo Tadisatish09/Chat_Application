@@ -51,17 +51,7 @@ export default function Sidebar({
   };
 
   return (
-    <div style={{
-      width: '380px',
-      minWidth: '320px',
-      maxWidth: '450px',
-      height: '100%',
-      backgroundColor: '#111b21',
-      borderRight: '1px solid #222d34',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative'
-    }}>
+    <div className="w-full md:w-[380px] lg:w-[420px] md:min-w-[320px] md:max-w-[450px] h-full bg-wa-panel md:border-r md:border-wa-border flex flex-col relative flex-shrink-0">
       {/* 1. Header Bar */}
       <div style={{
         height: '60px',

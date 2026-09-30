@@ -288,21 +288,7 @@ export default function CallModal({
 
         {/* C. Local Video PiP Floating Window */}
         {callState === 'connected' && callType === 'video' && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '24px',
-              right: '24px',
-              width: '180px',
-              height: '120px',
-              backgroundColor: '#000',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.7)',
-              border: '2px solid rgba(255,255,255,0.15)',
-              zIndex: 30
-            }}
-          >
+          <div className="absolute top-16 right-3 md:bottom-6 md:right-6 md:top-auto w-[110px] h-[150px] md:w-[180px] md:h-[120px] bg-black rounded-xl overflow-hidden shadow-2xl border-2 border-white/20 z-30 transition-all">
             <video
               ref={localVideoRef}
               autoPlay
@@ -336,17 +322,7 @@ export default function CallModal({
       </div>
 
       {/* 3. Bottom Controls Toolbar */}
-      <div
-        style={{
-          padding: '24px',
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '20px',
-          zIndex: 40
-        }}
-      >
+      <div className="p-4 md:p-6 bg-gradient-to-t from-black/95 to-transparent flex items-center justify-center gap-4 md:gap-8 z-40">
         {/* Incoming Call Buttons: Accept & Decline */}
         {callState === 'incoming_ringing' ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '36px' }}>

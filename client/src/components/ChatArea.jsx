@@ -20,7 +20,8 @@ import {
   Download,
   ExternalLink,
   Film,
-  X
+  X,
+  ArrowLeft
 } from 'lucide-react';
 import { downloadMediaFile } from '../utils/download';
 
@@ -36,7 +37,8 @@ export default function ChatArea({
   onToggleReaction,
   onDeleteMessage,
   onMediaClick,
-  onStartCall
+  onStartCall,
+  onBack
 }) {
   const [menuMessageId, setMenuMessageId] = useState(null);
   const [reactionMessageId, setReactionMessageId] = useState(null);
@@ -103,7 +105,18 @@ export default function ChatArea({
         borderBottom: '1px solid #222d34',
         zIndex: 10
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Mobile Back to Chats Button */}
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="md:hidden flex items-center justify-center w-8 h-8 rounded-full text-wa-text-secondary hover:text-wa-text-primary hover:bg-white/10 active:scale-95 transition-all mr-1 -ml-1"
+              title="Back to chats"
+            >
+              <ArrowLeft size={20} />
+            </button>
+          )}
+
           <div style={{ position: 'relative' }}>
             <img
               src={activeUser.avatar}
