@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Environment variables & secrets
+.env
+.env.*
+*.env
+!.env.example
+
+# Production builds
+dist/
+client/dist/
+dist-ssr/
+
+# Local databases & uploads
+*.db
+server/uploads/
+uploads/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
