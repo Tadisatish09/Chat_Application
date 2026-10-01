@@ -245,7 +245,8 @@ export default function ChatInput({
       position: 'relative',
       borderTop: '1px solid #222d34',
       flexShrink: 0,
-      zIndex: 10
+      zIndex: 10,
+      paddingBottom: 'env(safe-area-inset-bottom, 0px)'
     }}>
       {/* 1. Quoted Reply Preview Banner */}
       {replyingTo && (
