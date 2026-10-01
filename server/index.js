@@ -68,13 +68,21 @@ app.get('/api/health', (req, res) => {
 const clientDistPath = path.join(__dirname, '../client/dist');
 if (fs.existsSync(clientDistPath)) {
   console.log('[Server] 📦 Serving React production build from:', clientDistPath);
-  app.use(express.static(clientDistPath));
+  app.use(express.static(clientDistPath, {
+    maxAge: '1d',
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }
+  }));
 
   // Express 5 compatible fallback for all non-API frontend routes
   app.use((req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads') || req.path.startsWith('/socket.io')) {
       return res.status(404).json({ error: 'Endpoint not found' });
     }
+    res.setHeader('Cache-Control', 'no-cache');
     res.sendFile(path.join(clientDistPath, 'index.html'));
   });
 } else {

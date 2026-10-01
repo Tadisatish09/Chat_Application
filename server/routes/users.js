@@ -8,7 +8,7 @@ router.get('/', authenticateToken, async (req, res) => {
   try {
     const currentUserId = req.user.id;
 
-    // Get all users except current user
+    // 1. Get all other users in a single query
     const users = await query(
       `SELECT id, username, display_name, email, avatar, about, online, last_seen, created_at 
        FROM users 
@@ -17,38 +17,62 @@ router.get('/', authenticateToken, async (req, res) => {
       [currentUserId]
     );
 
-    // Fetch last message and unread count for each user
-    const enrichedUsers = await Promise.all(
-      users.map(async (u) => {
-        // Last message between current user and u.id
-        const lastMsgRows = await query(
-          `SELECT id, sender_id, receiver_id, text, media_url, media_type, is_forwarded, status, is_read, created_at
-           FROM messages
-           WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
-           ORDER BY created_at DESC
-           LIMIT 1`,
-          [currentUserId, u.id, u.id, currentUserId]
-        );
+    if (!users || users.length === 0) {
+      return res.json({ users: [] });
+    }
 
-        // Unread messages sent by u.id to currentUserId
-        const unreadRows = await query(
-          `SELECT COUNT(*) as unread_count
-           FROM messages
-           WHERE sender_id = ? AND receiver_id = ? AND (is_read = 0 OR is_read IS NULL) AND status != 'read'`,
-          [u.id, currentUserId]
-        );
-
-        const unreadCount = unreadRows[0]?.unread_count || unreadRows[0]?.['COUNT(*)'] || 0;
-
-        return {
-          ...u,
-          lastMessage: lastMsgRows[0] || null,
-          unreadCount: parseInt(unreadCount, 10)
-        };
-      })
+    // 2. Fetch unread counts in ONE batch query for all contacts
+    const unreadRows = await query(
+      `SELECT sender_id, COUNT(*) as unread_count
+       FROM messages
+       WHERE receiver_id = ? AND (is_read = 0 OR is_read IS NULL) AND status != 'read'
+       GROUP BY sender_id`,
+      [currentUserId]
     );
 
-    // Sort by most recent message activity
+    const unreadMap = {};
+    if (Array.isArray(unreadRows)) {
+      for (const row of unreadRows) {
+        const count = row.unread_count || row['COUNT(*)'] || 0;
+        unreadMap[row.sender_id] = parseInt(count, 10);
+      }
+    }
+
+    // 3. Fetch latest messages for each active conversation in ONE batch query
+    const latestMessages = await query(
+      `SELECT m.id, m.sender_id, m.receiver_id, m.text, m.media_url, m.media_type, m.is_forwarded, m.status, m.is_read, m.created_at
+       FROM messages m
+       INNER JOIN (
+         SELECT 
+           CASE WHEN sender_id = ? THEN receiver_id ELSE sender_id END as peer_id,
+           MAX(created_at) as max_created
+         FROM messages
+         WHERE sender_id = ? OR receiver_id = ?
+         GROUP BY CASE WHEN sender_id = ? THEN receiver_id ELSE sender_id END
+       ) latest ON (
+         (m.sender_id = latest.peer_id AND m.receiver_id = ?) OR
+         (m.sender_id = ? AND m.receiver_id = latest.peer_id)
+       ) AND m.created_at = latest.max_created`,
+      [currentUserId, currentUserId, currentUserId, currentUserId, currentUserId, currentUserId]
+    );
+
+    const lastMsgMap = {};
+    if (Array.isArray(latestMessages)) {
+      for (const msg of latestMessages) {
+        const partnerId = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
+        if (!lastMsgMap[partnerId]) {
+          lastMsgMap[partnerId] = msg;
+        }
+      }
+    }
+
+    // 4. Combine and sort
+    const enrichedUsers = users.map((u) => ({
+      ...u,
+      lastMessage: lastMsgMap[u.id] || null,
+      unreadCount: unreadMap[u.id] || 0
+    }));
+
     enrichedUsers.sort((a, b) => {
       const timeA = a.lastMessage ? new Date(a.lastMessage.created_at).getTime() : 0;
       const timeB = b.lastMessage ? new Date(b.lastMessage.created_at).getTime() : 0;
