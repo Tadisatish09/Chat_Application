@@ -93,9 +93,9 @@ export default function ChatArea({
   });
 
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative w-full bg-wa-dark">
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative w-full bg-wa-dark">
       {/* 1. Chat Header */}
-      <div className="h-[60px] bg-wa-panel-header px-2 sm:px-4 py-2 flex items-center justify-between border-b border-wa-border z-10 flex-shrink-0 w-full">
+      <div className="sticky top-0 h-[60px] bg-[#202c33] px-2 sm:px-4 py-2 flex items-center justify-between border-b border-wa-border z-30 flex-shrink-0 w-full shadow-sm">
         {/* Left Side: Back button + Avatar + User Info */}
         <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1 mr-1 sm:mr-3 overflow-hidden">
           {/* Mobile Back to Chats Button */}
@@ -140,7 +140,7 @@ export default function ChatArea({
         </div>
 
         {/* Right Side: Header Actions (Search, Video Call, Voice Call) */}
-        <div className="flex items-center gap-0.5 sm:gap-1.5 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           <button
             onClick={() => setShowSearch(!showSearch)}
             className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-wa-text-secondary hover:text-wa-text-primary hover:bg-white/10 active:scale-95 transition-all flex-shrink-0"
@@ -205,12 +205,11 @@ export default function ChatArea({
 
       {/* 3. Messages Stream */}
       <div
-        className="chat-pattern-bg"
+        className="chat-pattern-bg px-3 sm:px-6 md:px-10 py-3"
         style={{
           flex: 1,
           minHeight: 0,
           overflowY: 'auto',
-          padding: '16px 40px',
           display: 'flex',
           flexDirection: 'column',
           gap: '8px'

@@ -799,7 +799,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen w-screen bg-wa-dark overflow-hidden relative select-none">
+    <div className="flex h-[100dvh] h-screen w-full bg-wa-dark overflow-hidden fixed inset-0 select-none">
       {/* 1. Sidebar: visible on desktop, or on mobile when no active chat is selected */}
       <div className={`h-full ${activeUser ? 'hidden md:flex' : 'flex w-full'} md:w-[380px] lg:w-[420px] md:min-w-[320px] md:max-w-[450px] md:border-r md:border-wa-border flex-shrink-0`}>
         <Sidebar
@@ -816,7 +816,7 @@ export default function App() {
 
       {/* 2. Main Chat Area: visible on desktop, or on mobile when active chat is selected */}
       {activeUser ? (
-        <div className={`flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-wa-dark ${!activeUser ? 'hidden md:flex' : 'flex w-full'}`}>
+        <div className={`flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-wa-dark ${activeUser ? 'flex w-full' : 'hidden md:flex'}`}>
           <ChatArea
             activeUser={activeUser}
             currentUser={currentUser}
