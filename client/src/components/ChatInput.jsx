@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Smile,
   Paperclip,
   Mic,
   Send,
@@ -12,12 +11,6 @@ import {
   Sparkles
 } from 'lucide-react';
 
-const COMMON_EMOJIS = [
-  '😀', '😂', '🤣', '😍', '🥰', '😘', '😋', '😎', '🥳', '🤔',
-  '👍', '👎', '👏', '🙌', '🙏', '🔥', '✨', '🎉', '💯', '❤️',
-  '💔', '👀', '🚀', '⭐', '☕', '💡', '✅', '❌', '🍕', '🍻'
-];
-
 export default function ChatInput({
   onSendMessage,
   replyingTo,
@@ -27,7 +20,6 @@ export default function ChatInput({
   disabled
 }) {
   const [text, setText] = useState('');
-  const [showEmojis, setShowEmojis] = useState(false);
   const [showAttachments, setShowAttachments] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordDuration, setRecordDuration] = useState(0);
@@ -349,53 +341,7 @@ export default function ChatInput({
         </div>
       )}
 
-      {/* 3. Emoji Picker Popover */}
-      {showEmojis && (
-        <div className="animate-fade-in" style={{
-          position: 'absolute',
-          bottom: '70px',
-          left: '16px',
-          backgroundColor: '#202c33',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '12px',
-          padding: '14px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-          zIndex: 100,
-          width: '320px',
-          maxHeight: '220px',
-          overflowY: 'auto'
-        }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-            gap: '8px',
-            textAlign: 'center'
-          }}>
-            {COMMON_EMOJIS.map((emoji) => (
-              <button
-                key={emoji}
-                onClick={() => {
-                  setText(prev => prev + emoji);
-                  if (textareaRef.current) textareaRef.current.focus();
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '22px',
-                  cursor: 'pointer',
-                  padding: '6px',
-                  borderRadius: '8px',
-                  transition: 'background 0.15s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.08)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-              >
-                {emoji}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {/* 4. Attachment Popover */}
       {showAttachments && (
@@ -594,19 +540,7 @@ export default function ChatInput({
           <>
             <button
               onClick={() => {
-                setShowEmojis(!showEmojis);
-                setShowAttachments(false);
-              }}
-              className="icon-btn"
-              title="Emoji"
-            >
-              <Smile size={22} color={showEmojis ? '#00a884' : '#8696a0'} />
-            </button>
-
-            <button
-              onClick={() => {
                 setShowAttachments(!showAttachments);
-                setShowEmojis(false);
               }}
               className="icon-btn"
               title="Attach"
