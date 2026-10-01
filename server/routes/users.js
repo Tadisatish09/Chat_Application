@@ -82,7 +82,7 @@ router.get('/', authenticateToken, async (req, res) => {
     res.json({ users: enrichedUsers });
   } catch (err) {
     console.error('Fetch users error:', err);
-    res.status(500).json({ error: 'Failed to fetch users' });
+    res.status(500).json({ error: 'Failed to fetch users', details: err.message });
   }
 });
 

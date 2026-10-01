@@ -100,7 +100,7 @@ async function initDB() {
 
 async function query(sql, params = []) {
   if (dbType === 'mysql') {
-    const [rows] = await mysqlPool.execute(sql, params);
+    const [rows] = await mysqlPool.query(sql, params);
     return rows;
   } else {
     return new Promise((resolve, reject) => {
